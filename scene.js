@@ -2,7 +2,6 @@
 import * as CANNON from "cannon-es";
 import * as THREE from "three";
 import { loadModel } from "./modelLoader.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import CannonDebugger from "cannon-es-debugger";
 
@@ -49,7 +48,6 @@ async function init() {
     await addCar();
     addFloor();
     addSunLight();
-    // addBox();
     animate();
 }
 const keyState = {};
@@ -133,7 +131,7 @@ function addBox() {
     let meterial = new THREE.MeshBasicMaterial({ color: 0x000 });
     let floor = new THREE.Mesh(geometry, meterial);
     floor.position.y = 3;
-    floor.castShadow = true; // 그림자
+    floor.castShadow = true;
     createPhysicsFromModel(world, floor, 1);
     model.push(floor);
     scene.add(floor);
@@ -149,7 +147,7 @@ async function addCar() {
         }
     });
     initialRotation = new THREE.Quaternion();
-    initialRotation.setFromEuler(new THREE.Euler(0, -Math.PI / 2, 0)); // 90도 회전 및 다른 조정
+    initialRotation.setFromEuler(new THREE.Euler(0, -Math.PI / 2, 0));
     carBody = createPhysicsFromModel(world, car, 100);
     const box = new THREE.Box3().setFromObject(car);
     const size = box.getSize(new THREE.Vector3());
@@ -161,7 +159,6 @@ async function addCar() {
     const chassisBody = new CANNON.Body({ mass: 700 });
     chassisBody.addShape(shape);
     // chassisBody.addShape(chassisShape);
-    // chassisBody.position.set(car.position);
     chassisBody.position.set(0, 4, 0);
     chassisBody.angularVelocity.set(0, 0.5, 0);
 
@@ -264,15 +261,12 @@ async function addCar() {
     });
     heightfieldBody.addShape(heightfieldShape);
     heightfieldBody.position.set(
-        // -((sizeX - 1) * heightfieldShape.elementSize) / 2,
         -(sizeX * heightfieldShape.elementSize) / 2,
         -1,
-        // ((sizeZ - 1) * heightfieldShape.elementSize) / 2
         (sizeZ * heightfieldShape.elementSize) / 2
     );
     heightfieldBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
     // world.addBody(heightfieldBody);
-    // Define interactions between wheels and ground
     const wheel_ground = new CANNON.ContactMaterial(
         wheelMaterial,
         groundMaterial,
